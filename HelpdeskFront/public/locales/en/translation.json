@@ -1,0 +1,9 @@
+{
+    "Dashboard" : "Dashboard",
+    "ErrorPages" : "Error Pages",
+    "HelpDesk" : "HelpDesk",
+    "Inquiry" : "Inquiry",
+    "DataFixing" : "Request Data Fixing",
+    "Ticketing" : "Issue service ticket",
+    "AssetProcurement" : "Request IT Asset Procurement"
+}
