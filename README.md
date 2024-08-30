@@ -4,9 +4,6 @@ MS Azure SSO 로그인 인증
 ![image](https://github.com/user-attachments/assets/00a3c2a4-4db8-4ff9-b5ac-50a9c0e3d7eb)
 다국어 지원 기능
 
-![01](https://github.com/user-attachments/assets/48aeb2b4-8a3d-40c8-a9a0-d9fbdb1a52a7)
-헬프데스크 접수 화면
-
 ![image](https://github.com/user-attachments/assets/26c27150-0d95-4d80-a2d7-193958a6e7c5)
 API 호출 전 Axios를 통한 Azure 토큰 전송
 
@@ -16,9 +13,11 @@ API 호출 전 Axios를 통한 Azure 토큰 전송
 ![image](https://github.com/user-attachments/assets/94fd41f7-d97e-4046-9e3b-d9b81920b146)
 서비스에서 수행
 
+![01](https://github.com/user-attachments/assets/48aeb2b4-8a3d-40c8-a9a0-d9fbdb1a52a7)
+헬프데스크 접수 화면
+
 ![02](https://github.com/user-attachments/assets/d2d32179-17a5-4c38-bd2d-4915fa584a63)
 접수 유형을 클릭하여 상세 접수로 이동
-
 
 ![04](https://github.com/user-attachments/assets/0693e44c-6560-4caa-bc4f-1447d399e1b6)
 접수 게시글 작성
