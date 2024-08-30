@@ -14,10 +14,6 @@ API 호출 전 Axios를 통한 Azure 토큰 전송
 컨트롤러에서 백엔드 토큰 검증(Guard)
 
 
-![image](https://github.com/user-attachments/assets/94fd41f7-d97e-4046-9e3b-d9b81920b146)
-서비스에서 수행
-
-
 ![01](https://github.com/user-attachments/assets/48aeb2b4-8a3d-40c8-a9a0-d9fbdb1a52a7)
 헬프데스크 접수 화면
 
