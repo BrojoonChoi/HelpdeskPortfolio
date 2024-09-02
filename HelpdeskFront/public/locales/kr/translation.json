@@ -30,5 +30,7 @@
     "Inquiry Type Master Data" : "질문 유형 기준 정보",
     "Inquiry Type Detail Master Data" : "질문 유형 상세 기준 정보",
     "There is nothing to save." : "저장할 정보가 없습니다.",
-    "Detail Modify" : "상세 수정"
+    "Detail Modify" : "상세 수정",
+    "Issue HelpDesk Ticket" : "헬프데스크 티켓 발행",
+    "HelpDesk Ticket Management" : "헬프데스크 티켓 관리"
 }

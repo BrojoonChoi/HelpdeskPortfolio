@@ -39,8 +39,8 @@ const TicketManagement:FC<any> = () => {
       }, []);
 
     const GoToPost = (pParam:string) => {
-        const queryString = new URLSearchParams({ keytext: pParam, name: 'Test' }).toString();
-        navigate(`/ticketmanagement/${queryString}`)
+        const queryString = new URLSearchParams({ id:pParam }).toString();
+        navigate(`/ticketmanagement/detail?${queryString}`)
     }
 
     return (
@@ -50,7 +50,7 @@ const TicketManagement:FC<any> = () => {
                 <div className='card'>
                     <div className='card-header'>
                         <h4>
-                            {t('HelpDesk 질문하기')}
+                            {t('HelpDesk Ticket Management')}
                         </h4>
                     </div>
                     <div style={{display:"flex", flexDirection:"row", padding:'1.5rem', borderBlockEnd:'1px solid #e9edf4', width:'100%'}}>

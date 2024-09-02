@@ -1,14 +1,10 @@
-import { IsBoolean, IsDateString, IsString, IsOptional } from "class-validator";
-import { IsNull } from "typeorm";
+import { IsBoolean, IsDateString, IsString, IsOptional, IsNumber } from "class-validator";
 
 export class CreateTicketingDto {}
 
 export class CreateQuestionDto {
     @IsString()
     title:string;
-
-    @IsString()
-    category:string;
 
     @IsString()
     content:string;
@@ -25,4 +21,7 @@ export class CreateQuestionDto {
 
     @IsBoolean()
     urgent:boolean;
+
+    @IsNumber()
+    ref_:number;
 }

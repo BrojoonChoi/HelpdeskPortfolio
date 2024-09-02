@@ -4,6 +4,7 @@ import { UpdateMasterDataDto, UpdateMasterDataDetailDto } from './dto/update-mas
 import { InjectRepository } from '@nestjs/typeorm';
 import { tbl_helpdesk_inquirylist, tbl_helpdesk_inquirylist_detail } from './entities/tbl_helpdesk_inquirylist.entity';
 import { Repository } from 'typeorm';
+import { tbl_servicelist_filelist } from './entities/tbl_filelist.entity';
 
 @Injectable()
 export class MasterDataService {
@@ -13,7 +14,10 @@ export class MasterDataService {
     
         @InjectRepository(tbl_helpdesk_inquirylist_detail)
         private readonly MasterDataDetailRepository: Repository<tbl_helpdesk_inquirylist_detail>,
-      ) {}
+    
+        @InjectRepository(tbl_servicelist_filelist)
+        private readonly FileListRepository: Repository<tbl_servicelist_filelist>,
+    ) {}
 
     async Patch(updateMasterDataDto: UpdateMasterDataDto) {
         const formerData = await this.MasterDataRepository.findOne({where:{ id: updateMasterDataDto.id }});
@@ -41,9 +45,6 @@ export class MasterDataService {
             seq:updateMasterDataDetailDto.seq
         }
 
-        console.log(formerData)
-        console.log(createDto)
-        
         if (!formerData) {
             const newPost = this.MasterDataDetailRepository.create(createDto);
             return await this.MasterDataDetailRepository.save(newPost);
@@ -51,5 +52,17 @@ export class MasterDataService {
         else {
             return await this.MasterDataDetailRepository.update(formerData, createDto);
         }
+    }
+
+    async UploadFile(pRef:number, pUploader:string, pFile:Express.Multer.File):Promise<tbl_servicelist_filelist> {
+        const newFile = this.FileListRepository.create({
+            ref_: pRef,
+            filename:pFile.originalname,
+            mimetype:pFile.mimetype,
+            uploadedfile: pFile.buffer,
+            uploader: pUploader,
+            size: pFile.size,
+        })
+        return this.FileListRepository.save(newFile);
     }
 }

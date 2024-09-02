@@ -25,7 +25,7 @@ export class TicketingController {
   
   @Get('findwaitingqueue/:id')
   @UseGuards(AzureAdGuard)
-  async FindWaitingQueue(@Param('id') id: number ): Promise <Ticketing[]> {
+  async FindWaitingQueue(@Param('id') id: number ): Promise <number> {
     return await this.TicketingService.FindWaitingQueue(id);
   }
   

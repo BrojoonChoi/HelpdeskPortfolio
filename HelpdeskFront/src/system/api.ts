@@ -14,7 +14,7 @@ const apiClient: AxiosInstance = axios.create({
   },
 });
 
-const getToken = async () => {
+export const getToken = async () => {
   const account = msalInstance.getActiveAccount();
   if (!account) {
       throw new Error("No active account! Verify a user has been signed in.");
@@ -70,6 +70,27 @@ export const patchRequest = async <T, U>(endpoint: string, data: U): Promise<T> 
     handleError(error);
     throw error;
   }
+};
+
+export const handleDownload = (fileId, filename) => {
+  axios({
+    url: `${BASE_URL}/ticketmanagement/downloadfile/${fileId}`,
+    method: 'GET',
+    responseType: 'blob',
+  })
+  .then(response => {
+    // 다운로드를 위해 브라우저에서 파일을 생성하고 링크를 클릭
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  })
+  .catch(error => {
+    console.error('There was an error downloading the file!', error);
+  });
 };
 
 // 오류 처리 함수

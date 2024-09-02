@@ -1,4 +1,4 @@
-import { FC, Fragment, useState, useEffect } from 'react';
+import { FC, Fragment, useState, useEffect, useRef } from 'react';
 import { Card, Col, Form, Row } from 'react-bootstrap';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import PageHeader from '../../layouts/layoutcomponents/PageHeader';
@@ -15,52 +15,56 @@ import "suneditor/dist/css/suneditor.min.css";
 import { FilePond } from 'react-filepond';
 import 'filepond/dist/filepond.min.css';
 import { useTranslation } from 'react-i18next';
-import { getRequest, postRequest } from '../../system/api';
+import { getRequest, postRequest, getToken } from '../../system/api';
 
 interface PostQuestionProps { }
-interface PostCondition { key:string }
 
-const PostQuestion: FC<PostQuestionProps> = (pParam:PostCondition) => {
+const PostQuestion: FC<PostQuestionProps> = () => {
     //file upload
-	const [files] = useState([]);
+	const [files, setFiles] = useState([]);
   const { t, i18n } = useTranslation();
-  const [questionList, setquestionList] = useState<any>(null);
+  
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
-  const [keytext, setKeytext] = useState<string>(null);
-  const [category, setCategory] = useState<string>();
+  const [detailtext, setDetailtext] = useState<string>(null);
+
+  const [category, setCategory] = useState<number>();
+
   const [dueDate, setDueDate] = useState(new Date());
   const [editTitle, setEditTitle] = useState<string>();
   const [editContext, setEditContext] = useState<string>();
   const [isUrgent, setIsUrgent] = useState<boolean>(false);
   const navigate = useNavigate();
 
+  const filePondRef = useRef<FilePond>();
+  const [issuedId, setIssuedId] = useState<number>();
+
+  const [token, setToken] = useState<any>();
+
   useEffect(() => {
-      // GET 요청 예제
-      const fetchData = async () => {
-        try {
-          const result = await getRequest<any>(`/ticketing/findlist/${i18n.language}`);
-          setquestionList(result);
-        } catch (error) {
-          console.error('GET 요청 실패:', error);
-        }
-      };
-  
-      fetchData();
-      FindDetail();
+      const TokenSetter = async () => {
+        const issuedToken = await getToken();
+        setToken(issuedToken);
+      }
+      GetParamData();
+      TokenSetter();
     }, []);
 
-    const FindDetail = () => {
+    const GetParamData = () => {
       const queryParams = new URLSearchParams(location.search);
-      setKeytext(queryParams.get('keytext'));
+      setDetailtext(queryParams.get('detailtext'));
+      setCategory(parseInt(queryParams.get('id')))
       setIsLoaded(true);
     }
 
     const Summit = async () => {
       try {
-        await postRequest<any, any>(`ticketing/postinquiry/`, {
-          "category":keytext, "title":editTitle, "content":editContext, "requester":msalInstance.getActiveAccount().username,
-          "duedate":dueDate, "urgent":isUrgent, "pic":null
+        const result = await postRequest<any, any>(`ticketing/postinquiry/`, {
+          "title":editTitle, "content":editContext, "requester":msalInstance.getActiveAccount().username,
+          "duedate":dueDate, "urgent":isUrgent, "pic":null, "ref_":category
         })
+        setIssuedId(result.id);
+        if (files.length !== 0)
+          await filePondRef.current.processFiles();
         alert(t('Request is posted.'));
         navigate(`/qna/`)
       } catch (error) {
@@ -77,30 +81,30 @@ const PostQuestion: FC<PostQuestionProps> = (pParam:PostCondition) => {
       <Col lg={12}>
         <Card>
           <Card.Header>
-            <Card.Title>{`${t(keytext)}`}</Card.Title>
+            <Card.Title>{`${t(detailtext)}`}</Card.Title>
           </Card.Header>
           <Card.Body>
             <Row className="mb-4">
-              <Form.Label className="col-md-3">{`${t('Title')} :`}</Form.Label>
+              <Form.Label className="col-md-2">{`${t('Title')} :`}</Form.Label>
               <Col md={9}>
                 <Form.Control type="text" onChange={(event) => setEditTitle(event.target.value)}/>
               </Col>
             </Row>
             <Row className="mb-4">
-              <Form.Label className="col-md-3">{`${t('Work Type')} :`}</Form.Label>
+              <Form.Label className="col-md-2">{`${t('Work Type')} :`}</Form.Label>
               <Col md={9}>
-                <Form.Control type="text" value={keytext} readOnly />
+                <Form.Control type="text" defaultValue={detailtext} readOnly />
                 {/*<Select classNamePrefix="Select" options={questionList} placeholder='Electronics' onChange={(event) => setCategory(event)}/>*/}
               </Col>
             </Row>
             <Row>
-              <Form.Label className="col-md-3 mb-4">{`${t('Content')} :`}</Form.Label>
+              <Form.Label className="col-md-2 mb-4">{`${t('Content')} :`}</Form.Label>
               <Col md={9} className="mb-4">
                 <SunEditor placeholder={t('Default Content')} height='300'  onChange={(content:string) => setEditContext(content)}/>
               </Col>
             </Row>
             <Row style={{alignItems:'center', justifyItems:'center'}}>
-              <Form.Label className="col-md-3 mb-4">{`${t('Due Date')} :`}</Form.Label>
+              <Form.Label className="col-md-2 mb-4">{`${t('Due Date')} :`}</Form.Label>
               <Col md={4}>
                 <DatePicker selected={dueDate} onChange={(date) => setDueDate(date)} 
                 className="form-control"
@@ -114,17 +118,42 @@ const PostQuestion: FC<PostQuestionProps> = (pParam:PostCondition) => {
               </Col>
             </Row>
             <Row>
-              <Form.Label className="col-md-3 mb-4">{`${t('Upload File')} :`}</Form.Label>
+              <Form.Label className="col-md-2 mb-4">{`${t('Upload File')} :`}</Form.Label>
               <Col md={9}>
-            <FilePond files={files} allowMultiple={true} maxFiles={3} server="/api" name="files" />
+              <FilePond 
+                  ref={filePondRef}
+                  files={files} 
+                  allowMultiple={true}
+                  allowProcess={false}
+                  instantUpload={false}
+                  onupdatefiles={setFiles}
+                  server={{
+                  url: `http://localhost:7002/masterdata/`,
+                  process: {
+                    url: `filelist/upload/${issuedId}/${msalInstance.getActiveAccount().username}/`,
+                    method: 'POST',
+                    headers: {
+                      Authorization: `Bearer ${token}`, // Bearer 토큰 설정
+                    },
+                  },
+                }} 
+                name="files"
+                onprocessfile={(error, file) => {
+                  if (error) {
+                    console.error('File processing error:', error);
+                  } else {
+                    console.log('File processed successfully:', file);
+                  }
+                }}
+                />
               </Col>
             </Row>
           </Card.Body>
           <Card.Footer>
             <Row>
-              <Col md={3}></Col>
+              <Col md={2}></Col>
               <Col md={9}>
-                <Link to="#" className="btn btn-primary"  onClick={() => Summit()} >{`${t('Post')}`}</Link>
+                <div className="btn btn-primary"  onClick={() => Summit()} >{`${t('Post')}`}</div>
                 <Link to="/qna" className="btn btn-default float-end">{`${t('Cancel')}`}</Link>
               </Col>
             </Row>

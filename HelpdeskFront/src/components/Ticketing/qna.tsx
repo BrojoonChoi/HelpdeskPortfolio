@@ -49,15 +49,15 @@ const QnA:FC<QnAProps> = () => {
             //const result = await getRequest<QnAJsonProps>(`/ticketing/finddetail/${pParam.keytext}?lang=${i18n.language}`);
             setQuestionDetailList(result);
             
-            const queue = await getRequest<number>(`/ticketing/findwaitingqueue/${pParam.id}`);
-            setWaitingQueue(queue);
+            const queue = await getRequest<any>(`/ticketing/findwaitingqueue/${pParam.id}`);
+            setWaitingQueue(queue[0].result);
         }
         fetchData();
         setQuestionTitle(pParam.keytext);
     }
 
-    const GoToPost = (pId:string) => {
-        const queryString = new URLSearchParams({ id: pId }).toString();
+    const GoToPost = (pId:number, pDetailtext:string) => {
+        const queryString = new URLSearchParams({ id: pId.toString(), detailtext:pDetailtext }).toString();
         navigate(`/qna/postquestion?${queryString}`)
     }
 
@@ -70,7 +70,7 @@ const QnA:FC<QnAProps> = () => {
                     <div className='card'>
                         <div className='card-header'>
                             <h4>
-                            {t('HelpDesk 질문하기')}
+                            {t('Issue HelpDesk Ticket')}
                             </h4>
                         </div>
                         <div className='pb-0 card-body'>
@@ -100,7 +100,7 @@ const QnA:FC<QnAProps> = () => {
                                 {
                                     questionDetailList === null ? <div /> :
                                     questionDetailList.map((item:QnADetailJsonProps, index) => {return (
-                                    <li className='d-sm-flex' style={{cursor:"pointer"}} key={`${item.keytext}${index}`} onClick={() => GoToPost(item.id)}>
+                                    <li className='d-sm-flex' style={{cursor:"pointer"}} key={`${item.keytext}${index}`} onClick={() => GoToPost(item.id, item.detailtext)}>
                                         {t(item.detailtext)}
                                     </li>
                                 )})
@@ -109,7 +109,7 @@ const QnA:FC<QnAProps> = () => {
                             {waitingQueue === undefined ? <div></div> :
                             <Row>
                                 <div className='d-block d-sm-flex mt-4 align-items-center'>
-                                    {`현재 대기 중인 인원 : ${waitingQueue}}명`}
+                                    {`현재 대기 중인 인원 : ${waitingQueue}명`}
                                 </div>
                             </Row>
                             }

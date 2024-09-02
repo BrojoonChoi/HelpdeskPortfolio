@@ -23,6 +23,7 @@ import './system/languages';
 import { msalConfig } from './system/authConfig'
 import { PublicClientApplication } from "@azure/msal-browser";
 import { MsalProvider } from "@azure/msal-react";
+import TicketManagementDetail from './components/TicketManagement/ticketmanagment_detail';
 export const msalInstance = new PublicClientApplication(msalConfig);
 
 const container: HTMLElement | any = document.getElementById('root');
@@ -50,6 +51,7 @@ root.render(
                 <Route path={`${import.meta.env.BASE_URL}qna/postquestion`} element={<PostQuestion />} />
 
                 <Route path={`${import.meta.env.BASE_URL}ticketmanagement`} element={<TicketManagement />} />
+                <Route path={`${import.meta.env.BASE_URL}ticketmanagement/detail`} element={<TicketManagementDetail />} />
                 
                 <Route path={`${import.meta.env.BASE_URL}admin/question`} element={<Admin_Question />} />
               </Route>
