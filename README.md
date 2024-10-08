@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/7e8a7e09-91b4-46d4-9abd-a5dcb0874409)
+![image](https://github.com/user-attachments/assets/3a538bd5-000a-4753-8fbd-a27501b6d410)
 
 MS Azure SSO 로그인 인증
 
