@@ -3,7 +3,7 @@
 MS Azure SSO 로그인 인증
 
 
-![image](https://github.com/user-attachments/assets/00a3c2a4-4db8-4ff9-b5ac-50a9c0e3d7eb)
+![image](https://github.com/user-attachments/assets/77304ea1-6545-45b7-8917-7075e74e7b64)
 
 다국어 지원 기능
 
