@@ -1,4 +1,7 @@
 # 시스템 구성도
+![image](https://github.com/user-attachments/assets/7b888fef-f77a-478f-b9ca-59e921ae8087)
+결재 완료된 문서들은 MQ를 통해 ERP로 I/F(개발중)
+
 
 # 웹 페이지 기능
 ## SSO 로그인
